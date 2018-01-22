@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Sewer System</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+         /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+         #map {
+             /*position:absolute;*/
+             height: 100%;
+         }
+         /* Optional: Makes the sample page fill the window. */
+         html, body {
+             height: 100%;
+             margin: 0;
+             padding: 0;
+             font-family:'微軟正黑體';
+         }
+        #divFunction {
+            position:absolute;
+            top:3%;
+            height:10%;
+            width:55%;
+            margin-left:43%;
+            background-color:transparent;
+            /*z-index: 9999;*/
+        }
+        .defaultFunction {
+            display:inline-block;
+            padding:0 5px 0 0;
+            width:200px;
+            height:60px;
+            text-align:center;
+            font-size:36px;
+            line-height:65px;
+            -webkit-border-radius: 10;
+            -moz-border-radius: 10;
+            border-radius: 10px;
+            -webkit-box-shadow: 0px 1px 6px #666666;
+            -moz-box-shadow: 0px 1px 6px #666666;
+            box-shadow: 0px 1px 6px #666666;
+            color: #000000;
+            background: #ffffff;
+            border: solid #e0e0e0 5px;
+            text-decoration: none;
+        }
+        .defaultFunction:hover {
+            background: #a8def0;
+            text-decoration: none;
+        }
+        #style-selector {
+           / *position:absolute;
+            display:inline-block;
+            padding:0 5px 0 0;*/
+            width:215px;
+            height:70px;
+            font-size:36px;
+            /*line-height:65px;*/
+            -webkit-border-radius: 10;
+            -moz-border-radius: 10;
+            border-radius: 10px;
+            -webkit-box-shadow: 0px 1px 6px #666666;
+            -moz-box-shadow: 0px 1px 6px #666666;
+            box-shadow: 0px 1px 6px #666666;
+            color: #000000;
+            background: #ffffff;
+            border: solid #e0e0e0 5px;
+            text-decoration: none;
+        }
+        #style-selector:hover {
+            background: #a8def0;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="divFunction">
+        <!--<div class="defaultFunction" id="btn_reportInfo" style="margin-left:2%;">巡查資訊</div>-->
+        <!--<div class="defaultFunction" id="btn_default">台帳資訊</div>-->
+        <select id="style-selector" class="selector-control">
+            <!--<option>基本圖</option>
+            <option>衛星圖</option>-->
+            <option value="default" selected="selected">基本圖</option>
+            <option value="satellite">衛星圖</option>
+            <option value="night">夜間圖</option>
+        </select>
+  
+        <!--<div class="defaultFunction" style="margin-left:218px;">座標訊息</div>-->
+    </div>
+    <script>
+        var map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 25.060987, lng: 121.543944 },
+                zoom: 14,
+                mapTypeControl: false,
+
+            });
+            // Set the map's style to the initial value of the selector.
+            var styleSelector = document.getElementById('style-selector');
+            map.setOptions({ styles: styles[styleSelector.value] });
+
+            // Apply new JSON when the user selects a different style.
+            styleSelector.addEventListener('change', function () {
+                changeMapType();
+                map.setOptions({ styles: styles[styleSelector.value] });
+            });
+        }
+
+        function changeMapType() {
+            var e = document.getElementById("style-selector");
+            var v = e.options[e.selectedIndex].value;
+            if (v == "satellite") {
+                map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+            } else {
+                map.setMapTypeId('terrain');
+            }
+        }
+
+        var styles = {
+            default: null,
+            night: [
+              { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+              { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+              { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+              {
+                  featureType: 'administrative.locality',
+                  elementType: 'labels.text.fill',
+                  stylers: [{ color: '#d59563' }]
+              },
+              {
+                  featureType: 'poi',
+                  elementType: 'labels.text.fill',
+                  stylers: [{ color: '#d59563' }]
+              },
+              {
+                  featureType: 'poi.park',
+                  elementType: 'geometry',
+                  stylers: [{ color: '#263c3f' }]
+              },
+              {
+                  featureType: 'poi.park',
+                  elementType: 'labels.text.fill',
+                  stylers: [{ color: '#6b9a76' }]
+              },
+              {
+                  featureType: 'road',
+                  elementType: 'geometry',
+                  stylers: [{ color: '#38414e' }]
+              },
+              {
+                  featureType: 'road',
+                  elementType: 'geometry.stroke',
+                  stylers: [{ color: '#212a37' }]
+              },
+              {
+                  featureType: 'road',
+                  elementType: 'labels.text.fill',
+                  stylers: [{ color: '#9ca5b3' }]
+              },
+              {
+                  featureType: 'road.highway',
+                  elementType: 'geometry',
+                  stylers: [{ color: '#746855' }]
+              },
+              {
+                  featureType: 'road.highway',
+                  elementType: 'geometry.stroke',
+                  stylers: [{ color: '#1f2835' }]
+              },
+              {
+                  featureType: 'road.highway',
+                  elementType: 'labels.text.fill',
+                  stylers: [{ color: '#f3d19c' }]
+              },
+              {
+                  featureType: 'transit',
+                  elementType: 'geometry',
+                  stylers: [{ color: '#2f3948' }]
+              },
+              {
+                  featureType: 'transit.station',
+                  elementType: 'labels.text.fill',
+                  stylers: [{ color: '#d59563' }]
+              },
+              {
+                  featureType: 'water',
+                  elementType: 'geometry',
+                  stylers: [{ color: '#17263c' }]
+              },
+              {
+                  featureType: 'water',
+                  elementType: 'labels.text.fill',
+                  stylers: [{ color: '#515c6d' }]
+              },
+              {
+                  featureType: 'water',
+                  elementType: 'labels.text.stroke',
+                  stylers: [{ color: '#17263c' }]
+              }
+            ],
+        };
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDx061NdRVN8zUE4F7aXCr5MGEL7bDKQlc&callback=initMap"
+            async defer></script>
+</body>
+
+</html>
